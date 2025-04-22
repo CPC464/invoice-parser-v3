@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8888:8000"
+    volumes:
+      - ./backend:/app
+      - db_data:/app/db
+      - media_data:/app/media
+    env_file:
+      - ./backend/.env.local
+    environment:
+      - DEBUG=1
+    restart: always
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./frontend:/app
+    env_file:
+      - ./frontend/.env.local
+    depends_on:
+      - backend
+    environment:
+      - BACKEND_URL=http://backend:8000
+    restart: always
+
+volumes:
+  db_data: # Volume for SQLite database
+  media_data: # Volume for uploaded files

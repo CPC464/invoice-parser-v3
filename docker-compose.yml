@@ -15,6 +15,7 @@ services:
       - ./backend/.env.local
     environment:
       - DEBUG=1
+      # Django superuser credentials will be loaded from .env.local
     restart: always
 
   frontend:

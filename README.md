@@ -22,6 +22,7 @@ A complete system for uploading, managing, and processing invoice files. Built w
 ### Prerequisites
 
 - Docker and Docker Compose
+- Properly configured .env.local files in backend/ and frontend/ directories
 
 ### Starting the Application
 
@@ -35,6 +36,7 @@ This will:
 2. Set up the database
 3. Start the backend Django server on port 8888
 4. Start the frontend Streamlit app on port 8501
+5. Create a Django superuser using credentials from backend/.env.local (if one doesn't exist)
 
 ### Resetting the Application
 
@@ -50,7 +52,7 @@ This will:
 2. Remove the database file
 3. Clean up media files
 4. Rebuild and restart the application
-5. Create a new admin user
+5. Create a new admin user using credentials from backend/.env.local (if one doesn't exist)
 
 ## Accessing the Applications
 
@@ -59,10 +61,17 @@ This will:
 - **API Documentation:** http://localhost:8888/api/docs/
 - **Admin Panel:** http://localhost:8888/admin/
 
-### Default Admin Credentials
+### Admin Credentials
 
-- **Username:** admin
-- **Password:** adminpassword
+The system uses the admin credentials specified in your backend/.env.local file:
+
+```
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_PASSWORD=admin
+DJANGO_SUPERUSER_EMAIL=admin@example.com
+```
+
+These credentials must be properly set in the .env.local file for the superuser creation to work.
 
 ## API Endpoints
 

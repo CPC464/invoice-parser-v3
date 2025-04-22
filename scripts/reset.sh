@@ -12,19 +12,26 @@ fi
 echo "Stopping all services..."
 docker-compose down
 
-echo "Removing database..."
-rm -f backend/db/db.sqlite3
+echo "Removing Docker volumes for database and media..."
+docker volume rm invoice-parser-v3_db_data invoice-parser-v3_media_data || true
 
-echo "Removing media files..."
+# Also delete local files if they exist (as a fallback)
+echo "Cleaning up any local database and media files..."
+rm -f backend/db/db.sqlite3
 rm -rf backend/media/uploads/*
 
-echo "Rebuilding and starting services..."
+echo "Rebuilding and starting services with fresh volumes..."
 docker-compose up -d --build
 
 echo "Waiting for services to initialize..."
 sleep 10
 
-echo "Creating/updating superuser from environment variables..."
+# Run migrations first to create database tables
+echo "Running database migrations..."
+docker-compose exec backend python manage.py migrate
+
+# Now create the superuser after tables exist
+echo "Creating superuser from environment variables..."
 docker-compose exec backend python manage.py shell -c "
 from django.contrib.auth.models import User
 from django.conf import settings
